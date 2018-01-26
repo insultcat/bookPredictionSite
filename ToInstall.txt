@@ -1,0 +1,9 @@
+
+#pip install -t . numpy scipy scikit-learn 
+
+pip install -U numpy
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install gcc
+pip install -U scipy
+pip install -U scikit-learn
+pip install -U stop_words

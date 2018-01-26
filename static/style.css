@@ -1,0 +1,270 @@
+body{
+  /*background-image: url('images/upfeathers.png');*/
+  background-size: 200px;
+  margin: 0;
+}
+
+input, label, select{
+ display: block;
+}
+
+input, select{
+  margin-bottom: 10px;
+  width: 70%;
+  height: 30px;
+}
+
+input:not([type=radio]), textarea, select{
+  /*-webkit-box-shadow:inset 0 0 1px #eee;
+  -moz-box-shadow:inset 0 0 1px #eee;
+  box-shadow:inset 0 0 1px #eee;*/
+  border: 1px solid #ddd;
+  background-color: #f4f7fa;
+  padding-left: 10px;
+}
+
+input[type=radio]{
+  width: 5px;
+  margin-bottom: 20px;
+  margin-top: 12px;
+  margin-right: 20%;
+  float: left;
+  height: 10px;
+}
+
+input[type=submit]{
+  width: 30%;
+  margin-left: 15%;
+  background-color: #0085f8;
+  color: #fff;
+}
+
+label[for=summary]{
+  /*float: left;*/
+}
+
+#upload{
+  background-color: #fff;
+  border: none;
+  width: 30%;
+  height: auto;
+}
+
+label[for=category]{
+  width: 15%;
+  float: left;
+  margin-top: 10px;
+}
+
+label{
+  font-family: 'helvetica neue', 'calibri', sans-serif;
+  font-weight: 350;
+  font-size: 13px;
+}
+
+textarea#summary{
+  width: 70%;
+  height: 100px;
+  word-wrap: normal;
+  resize: vertical;
+}
+
+#inputParent{
+  width: 20vw;
+  min-width: 200px;
+  padding: 5% 0 3.5% 5%;
+  margin: 0 0 0 5vw;
+  float:left;
+  /*background-image: url('images/blur2.png');*/
+  background-size: 200px;
+  background-position: 98% 11%;
+  background-color: rgba(240, 240, 240, 1);
+  border: 1px #eee solid;
+  height: 70vh;
+}
+
+form p{
+  float: left;
+}
+
+#header{
+  /*background-color:#0085f8;*/
+  background-color: #5380a7;
+  height: 48px;
+  width: 100%;
+  padding-top: 10px;
+  margin: 0;
+  -webkit-box-shadow:  inset 0 -1px 12px #667;
+  -moz-box-shadow:  inset 0 -1px 12px #667;
+  box-shadow:  inset 0 -1px 12px #667;
+  position: relative;
+}
+
+#logo{
+  width:80px;
+  height: 80px;
+  background-image: url('images/kitapp3.png');
+  background-size: 90px;
+  margin: 0 auto;
+  border-radius: 100%;
+  background-position: -1px -2px;
+  top: 2px;
+  -webkit-box-shadow:  inset 0 2px 12px #334;
+  -moz-box-shadow:  inset 0 2px 12px #334;
+  box-shadow:  inset 0 2px 12px #334;
+  position: relative;
+  background-color: #3b5369;
+}
+
+.twitter-typeahead{
+  width:100%;
+}
+
+.tt-menu{
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+#display{
+  width:31vw;
+  height: 74vh;
+  margin-left: 5vw;
+  padding: 5% 10px 10px 10px;
+  /*background-image: url('images/blur2.png');*/
+  background-size: 200px;
+  background-position: 98% 11%;
+  background-color: rgba(240, 240, 240, 1);
+  border: 1px #eee solid;
+  float:left;
+}
+
+#display p, #metric p{
+  font-family: 'helvetica neue', 'calibri', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  text-align: center;
+}
+
+#display svg{
+  margin-left: calc(35% - 140px);
+  pointer-events: fill;
+}
+
+.keepHeight{
+  height: 40px;
+}
+
+.bar rect {
+  fill: #0085f8;
+  opacity: 0.1;
+}
+
+.bar text {
+  fill: #000;
+  font: 10px sans-serif;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    clear:both;
+    font-size: 10px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    top:-2px;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 1s;
+    font-family: 'helvetica neue', 'calibri', sans-serif;
+    font-size: 12px;
+    padding: 10px;
+    line-height: 1.3;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.tooltipLabel{
+  float: left;
+}
+
+#heightLabel{
+  background-color: rgba(250, 250, 250, 0.8);
+  position: absolute;
+  z-index:2;
+  border-radius: 10%;
+  pointer-events: none;
+}
+
+#heightLabel p{
+  font-size: 11px;
+  margin: 0;
+  text-align: left;
+  padding: 5px;
+}
+
+#metric{
+  width:22vw;
+  height: 76vh;
+  /*background-image: url('images/blur2.png');*/
+  background-size: 200px;
+  background-position: 98% 11%;
+  background-color: rgba(240, 240, 240, 1);
+  float: left;
+  margin-left: 5vw;
+  padding: 5% 0 0 0;
+  border: 1px #eee solid;
+}
+
+#meter{
+  height: 80%;
+  margin: 10%;
+}
+
+#meter p{
+  text-align: left;
+  padding: 5px 5px 5px 10px;
+  font-size: 12px;
+  font-weight: 400;
+  margin: 0;
+  color: #b6d8f5;
+}
+
+#meter p.name{
+  color: aliceblue;
+  font-size: 12px;
+}
+
+#meter .famousPerson{
+  background-color: #5380a7;
+  margin: 1em;
+  border-radius: 5px;
+}

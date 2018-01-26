@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="../static/js/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="../static/js/d3.v4.min.js"></script>
+  <script type="text/javascript" src="../static/js/typeahead.js-master/dist/bloodhound.js"></script>
+  <script type="text/javascript" src="../static/js/typeahead.js-master/dist/typeahead.jquery.js"></script>
+  <script type="text/javascript" src="../static/js/typeahead.js-master/dist/typeahead.bundle.js"></script>
+</head>
+<body>
+  <div id="header">
+    <div class="frame"></div>
+    <div id ="logo"></div>
+  </div>
+  <div id="inputParent">
+    <label for="authorname">Author Name *</label>
+    <div id="prefetchAuthorname">
+      <input type="text" id="authorname" class="typeahead" autofocus required>
+    </div>
+
+    <label for="impTier" class="tooltipLabel">Publisher Tier</label>
+    <div class="tooltip">ⓘ
+      <span class="tooltiptext">
+        Use this category to filter publishers based on their prestige levels.
+      </span>
+    </div>
+    <select id="imprintFilter" onchange="changeImp();">
+      <option value="high">High</option>
+      <option value="middle">Middle</option>
+      <option value="low">Low</option>
+      <option value="novalue">N/A</option>
+    </select>
+
+    <label for="imprint">Publisher *</label>
+    <div id="prefetchImprint">
+      <input type="text" id="imprint" class="typeahead" required>
+    </div>
+
+    <!--Category-->
+    <label for="category">Fiction</label>
+    <input type="radio" id="category" name="category" value="F" onclick="filterBisac(true);">
+    <label for="category">Non-fiction</label>
+    <input type="radio" id="category" name="category" value="NF" onclick="filterBisac(false);">
+
+    <!--Bisac Genre value is Bisac code-->
+    <label for="bisac" style="clear:both;">Genre *</label>
+    <div id="bisacContainer"></div>
+
+    <label for="totalprevsale" class="tooltipLabel">Estimated Previous Sales *</label>
+    <div class="tooltip">ⓘ
+      <span class="tooltiptext">
+      The up-to-date total sales of all books previously published by this author
+      </span>
+    </div>
+    <input type="number" id="totalprevsale" step="0.01" value=200 required>
+
+    <!-- <label for="prevsalehardcover">Prev Sale Hardcover</label>
+    <input type="number" id="prevsalehardcover" step="0.01" value=100 required> -->
+
+    <label for="saleingenre" class="tooltipLabel">Sales in Genre</label>
+    <div class="tooltip">ⓘ
+      <span class="tooltiptext">
+    The up-to-date total sales of books by this author published in the selected genre
+      </span>
+    </div>
+    <input type="number" id="saleingenre" step="0.01" value=200>
+
+    <label for="yearoffirstbook">Year of first book *</label>
+    <input id="yearoffirstbook" type="number" maxlength="4" value=2000 required>
+
+    <label for="summary">Summary</label>
+    <!--<input type="file" id="upload" accept=".txt,.doc,.pdf" onchange="readTextFile($this.val());"/>-->
+    <textarea type="text" id="summary"  wrap="soft" cols="30%" value="thriller kill vampire"> </textarea>
+
+    <input type="submit" value="submit" onclick="showInput();">
+    </div>
+
+    <div id="display">
+      <p>This Author's Fame Score for the last month:
+        <span class="tooltip">ⓘ
+          <span class="tooltiptext">
+            For now we are using the month of July, 2016.
+          </span>
+        </span>
+      </p>
+      <div class = "keepHeight">
+        <div id="fameMonth" class="resultText"></div>
+      </div>
+      <p>This Author's Fame Score for the last year:
+        <span class="tooltip">ⓘ
+          <span class="tooltiptext">
+            For now we are using the data from August 2015 to August 2016.
+          </span>
+        </span>
+      </p>
+      <div class = "keepHeight">
+        <div id="fameYear" class="resultText"></div>
+      </div>
+      <p>First Year Sales:
+      <div class = "keepHeight">
+        <div id="prediction" class="resultText"></div>
+      </div>
+      <svg width="400" height="400"></svg>
+      <div id="heightLabel"></div>
+    </div>
+
+    <div id="metric">
+      <p>Fame Barometer</p>
+      <div id="meter">
+          <div class="famousPerson">
+            <p class="name">Barack Obama</p>
+            <p>M: 518,672<br/>
+              Y: 6,001,949</p>
+          </div>
+          <div class="famousPerson">
+            <p class="name">Justin Bieber</p>
+            <p>M: 157,674<br/>
+              Y: 3,269,314</p>
+          </div>
+          <div class="famousPerson">
+            <p class="name">Dante Alighieri</p>
+            <p>M: 31,951<br/>
+              Y: 527,449</p>
+          </div>
+          <div class="famousPerson">
+            <p class="name">Lemony Snicket</p>
+            <p>M: 11,732<br/>
+              Y: 198,523</p>
+          </div>
+          <div class="famousPerson">
+            <p class="name">J.K. Rowling</p>
+            <p>M: 6,339<br/>
+              Y: 36,580</p>
+          </div>
+          <div class="famousPerson">
+            <p class="name">J.R.R. Tolkien</p>
+            <p>M: 2,131<br/>
+              Y: 34,123</p>
+          </div>
+          <div class="famousPerson">
+            <p class="name">R.L. Stine</p>
+            <p>M: 682<br/>
+              Y: 11,716</p>
+          </div>
+      </div>
+    </div>
+  </body>
+
+
+  <script type="text/javascript">
+    //show bar height on hover
+    $(document).ready(function(){
+        $("svg").hover(function(){
+          $('#heightLabel').fadeIn('fast');
+        },
+        function(){
+          $('#heightLabel').fadeOut('fast');
+        });
+    });
+
+    //filter bisac based on category
+    function filterBisac(f){
+      if(f == true){
+        $('option').show();
+        $('#bisacContainer option:not([id*=FIC])').hide();
+        $("#bisac").prop("selectedIndex", -1);
+      }
+      else{
+        $('option').show();
+        $('#bisacContainer option[id*=FIC]').hide();
+        $('#bisac').value = "CKB";
+        $("#bisac").prop("selectedIndex", -1);
+      }
+    }
+
+    //generates bisac dropdown from json file
+    window.onload = function () {
+      $.getJSON("../static/data/bisac_info_dict.json",function(data){
+        var items = [];
+        $.each(data, function(key,val){
+          items.push("<option value='" + key+"' id='"+ key+"'>"+val+"</option>");
+        });
+        $( "<select/>", {
+            "id":"bisac",
+            html: items.join( "" )
+        }).appendTo( "#bisacContainer" );
+
+        $( "option", "#bisac" ).sort(function( a, b ) {
+			       return $( a ).text() > $( b ).text();
+        }).appendTo( "#bisac" );
+
+        $("#bisac").prop("selectedIndex", -1);
+      });
+    };
+
+    //generates typeahead for author and imprint inputs
+    var authors = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: "../static/data/authors.json"
+    });
+
+    $('#prefetchAuthorname .typeahead').typeahead(null, {
+      name: 'authors',
+      source: authors
+    });
+
+    var imprints = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: "../static/data/imprints"+$("#imprintFilter").val()+".json"
+    });
+
+    $('#prefetchImprint .typeahead').typeahead(null, {
+      name: 'imprints',
+      source: imprints
+    });
+
+    function changeImp(){
+      console.log(imprints);
+      $("#imprint").val('');
+      $("#prefetchImprint .typeahead").typeahead("destroy");
+      var imprints = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: "../static/data/imprints"+$("#imprintFilter").val()+".json"
+      });
+      $("#prefetchImprint .typeahead").typeahead(null, {
+        name: 'imprints',
+        source: imprints
+      });
+    }
+
+  //sends form data to flask
+  function showInput() {
+    $(".resultText").fadeOut('fast');
+    var deferredData = new jQuery.Deferred();
+    console.log("showing Input");
+    var params = {};
+
+    params.name = document.getElementById("authorname").value;
+    params.imprint = document.getElementById("imprint").value;
+    params.category = document.getElementById("category").value;
+    params.bisac_prefix = document.getElementById("bisac").value;
+    params.previous_sale_total = document.getElementById("totalprevsale").value;
+    params.previous_sale_HC = document.getElementById("totalprevsale").value;
+    if( !$("#saleingenre").val()){
+      //console.log("sale in g left blank");
+      params.previous_sale_in = document.getElementById("totalprevsale").value;
+    }
+    else{
+      params.previous_sale_in = document.getElementById("saleingenre").value;
+    }
+    params.career_start_year = document.getElementById("yearoffirstbook").value;
+    params.short_summary = document.getElementById("summary").value;
+
+    console.log(params);
+    console.log('stringify'+JSON.stringify(params))
+    $.ajax({
+      type: "POST",
+      url: 'http://127.0.0.1:5000/',
+      dataType : 'json',
+      data: params, //form containing name and age
+      success: function(result){
+        console.log(result);
+        //$(".delete, .axis").animate({opacity:0}, 500, function(){});
+      //  $(".delete, .axis").remove();
+        $("svg").empty();
+        $("#fameMonth").empty();
+        $("#fameYear").empty();
+        $("#prediction").empty();
+        $(".bar rect, .bar text").animate({opacity:0.05}, 1000, function(){});
+        $(".bar rect, .bar text").addClass("delete");
+        var fameCommas = numberWithCommas(result.fame_last_month);
+        $("<p>"+fameCommas+"</p>").appendTo("#fameMonth");
+        var fameYCommas = numberWithCommas(result.fame_last_year);
+        $("<p>"+fameYCommas+"</p>").appendTo("#fameYear");
+        var resultRounded = roundToInt(result.prediction);
+        var resultCommas = numberWithCommas(resultRounded);
+        $("<p>"+resultCommas+"</p>").appendTo("#prediction");
+        $(".resultText").fadeIn('slow');
+        drawHistogram(result.hist, result.hist_bin_edges);
+      }
+    });
+  }
+
+  //adds commas to returned values
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // rounds value to int
+  function roundToInt(x){
+    x = Math.round(x);
+    return x;
+  }
+
+  function drawHistogram(hist, hist_bin){
+    var xpos = 0;
+    //console.log("HIST: "+hist+", BINS: "+hist_bin);
+    var formatCount = d3.format(",.0f");
+
+    var svg = d3.select("svg"),
+      margin = {top: 10, right: 30, bottom: 30, left: 30},
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom,
+      g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleLog()
+    .domain([10, d3.max(hist_bin, function(d) { return Math.abs(d); })])
+    .rangeRound([0, width]);
+
+    var y = d3.scaleLinear()
+    .domain([
+      d3.min(hist, function(d) { return d; }),
+      d3.max(hist, function(d) { return d; })])
+    .range([height,0]);
+
+    var bar = g.selectAll(".bar")
+    .data(hist_bin)
+    .enter().append("g")
+      .attr("class", function(d) { return "bar bar--" + (y(d) < 0 ? "negative" : "positive"); })
+      .attr("transform", function(d,i) {
+        //console.log(hist[i]+", "+y(hist[i])+", "+d+", "+i);
+        if(hist[i] > 0 ){
+          return "translate(" + x(d) + "," + (y(hist[i])) + ")";
+        }
+        else{
+          return "translate(" + x(d) + "," + y(0) + ")";
+        }
+      });
+
+    bar.append("rect")
+      .attr("x", 1)
+      .attr("width", 1)
+      .attr("height", function(d,i) {
+        if(hist[i] > 0 ){
+          return y(0) - (y(hist[i]));
+        } else{
+          return Math.abs(y(0) - y(hist[i]));
+        }
+      })
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut);
+
+  // bar.append("text")
+  //     .attr("dy", ".75em")
+  //     .attr("y", 6)
+  //     .attr("x", (x(bins[0].x1) - x(bins[0].x0)) / 2)
+  //     .attr("text-anchor", "middle")
+  //     .text(function(d) { return formatCount(d.length); });
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      //.attr("transform", "translate(0," + height + ")")
+      .attr('transform', 'translate(0,' + y(0) + ')')
+      .call(d3.axisBottom(x)
+        .ticks(5, "s"));
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .attr("transform", "translate(0,0)")
+      .call(d3.axisLeft(y)
+        .ticks(5,".01s"));
+
+    function handleMouseOver(d, i) {
+      d3.select(this).style("fill","red");
+      d3.select(this).style("opacity", "1");
+      $('#heightLabel').empty();
+      var rectPos = $(this).position();
+       $('#heightLabel').css({
+        'top':rectPos.top,
+        'left':rectPos.left,
+        'z-index':'1'});
+      var dComma = numberWithCommas(d);
+      var yComma = numberWithCommas(hist[i]);
+      $("<p> x: "+dComma+"<br/> y: "+yComma+"</p>").appendTo("#heightLabel");
+    }
+    function handleMouseOut(d, i) {
+      d3.select(this).style("fill","#0085f8");
+      d3.select(this).style("opacity", "0.1");
+    }
+  }
+  </script>
+</html>
